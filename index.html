@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IQC BY MANZ</title>
+  <style>
+    /* === RESET === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #0f001a, #000 85%);
+      color: #f5f5f5;
+      font-family: "Poppins", Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      margin: 30px 0;
+      background: linear-gradient(90deg, #9b00ff, #b84dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px rgba(155, 0, 255, 0.7);
+      letter-spacing: 1.5px;
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 20px #9b00ff55; }
+      to   { text-shadow: 0 0 40px #b84dffcc; }
+    }
+
+    .container {
+      background: rgba(20, 0, 20, 0.9);
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 0 35px rgba(155,0,255,0.25);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(155,0,255,0.3);
+      animation: fadeIn 0.8s ease forwards;
+      transition: all 0.4s ease;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      outline: none;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.05);
+      color: #f5f5f5;
+      transition: 0.3s;
+    }
+    input:focus, select:focus {
+      border-color: #9b00ff;
+      box-shadow: 0 0 15px #9b00ff88;
+      background: rgba(255,255,255,0.08);
+    }
+
+    button {
+      background: linear-gradient(135deg, #9b00ff, #5a00b8);
+      border: none;
+      padding: 14px 30px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #fff;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 20px rgba(155,0,255,0.4);
+    }
+    button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 0 25px rgba(155,0,255,0.6);
+    }
+
+    .result {
+      margin-top: 25px;
+      min-height: 140px;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    .result img {
+      max-width: 100%;
+      border-radius: 20px;
+      border: 2px solid #9b00ff;
+      margin-top: 20px;
+      box-shadow: 0 0 25px rgba(155,0,255,0.35);
+      transition: transform 0.25s ease;
+    }
+    .result img:hover {
+      transform: scale(1.03);
+    }
+
+    .loader {
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top: 4px solid #9b00ff;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      animation: spin 1s linear infinite;
+      margin: 25px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .download-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 25px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #9b00ff, #5a00b8);
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+      box-shadow: 0 0 18px rgba(155,0,255,0.4);
+    }
+    .download-btn:hover {
+      box-shadow: 0 0 25px rgba(155,0,255,0.6);
+      transform: scale(1.05);
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      font-size: 0.85rem;
+      color: #888;
+      text-align: center;
+      opacity: 0.8;
+    }
+    footer a {
+      color: #b84dff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚡ iPhone Quoted - Manz</h1>
+  <div class="container">
+    <input type="text" id="message" placeholder="Ketik teks di sini">
+    <input type="text" id="time" placeholder="Jam (HH:MM), default 00:00">
+    <input type="number" id="battery" placeholder="Baterai % (0-100), default 100">
+
+    <select id="carrier">
+      <option value="INDOSAT OOREDOO">INDOSAT OOREDOO</option>
+      <option value="TELKOMSEL">TELKOMSEL</option>
+      <option value="IM3">IM3</option>
+      <option value="XL AXIATA">XL AXIATA</option>
+      <option value="TRI">TRI (3)</option>
+      <option value="SMARTFREN">SMARTFREN</option>
+    </select>
+
+    <button onclick="generateImage()">🚀 Generate</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <footer>
+    Made with hate by <a href="#">Manz.</a>
+  </footer>
+
+  <script>
+    function generateImage() {
+      const message = document.getElementById("message").value.trim();
+      const time = document.getElementById("time").value.trim() || "00:00";
+      const battery = document.getElementById("battery").value.trim() || "100";
+      const carrier = document.getElementById("carrier").value;
+
+      const resultDiv = document.getElementById("result");
+
+      if (!message) {
+        alert("⚠️ Teks tidak boleh kosong!");
+        return;
+      }
+
+      resultDiv.innerHTML = '<div class="loader"></div><p>Processing...</p>';
+
+      const apiUrl = `https://brat.siputzx.my.id/iphone-quoted?time=${encodeURIComponent(time)}&messageText=${encodeURIComponent(message)}&carrierName=${encodeURIComponent(carrier)}&batteryPercentage=${encodeURIComponent(battery)}&signalStrength=4&emojiStyle=apple`;
+
+      setTimeout(() => {
+        resultDiv.innerHTML = `
+          <p>🪄 Result:</p>
+          <img src="${apiUrl}" alt="Generated Image">
+          <br>
+          <a class="download-btn" href="/api/download?url=${encodeURIComponent(apiUrl)}">Download</a>
+        `;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
